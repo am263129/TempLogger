@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">TempLogger</string>
+    <string name="btnClear">クリアー</string>
+    <string name="btnSave">確  定</string>
+    <string name="labelTemp">現在のデバイス温度：</string>
+    <string name="labelTicket">診察券番号</string>
+    <string name="labelType">犬 or 猫</string>
+    <string name="labelVariety">品種</string>
+    <string name="labelHairLen">被毛長さ</string>
+    <string name="labelHairType">被毛種類</string>
+    <string name="labelTempRectal">直腸温</string>
+    <string name="labelTempRoom">室温</string>
+    <string name="labelNote">メモ</string>
+    <string name="labelConnecting">接続中...</string>
+    <string name="symbolCelsius">℃</string>
+    <string name="msgEmptyTicket">診察券番号を入力してください。</string>
+    <string name="msgEmptyRectalTemp">直腸温を入力してください。</string>
+    <string name="msgEmptyRoomTemp">室温を入力してください。</string>
+    <string name="msg_no_sensor_device">センサーデバイスを見つかりません。</string>
+    <string name="msg_device_busy">デバイスが使用中です。</string>
+    <string name="msg_invalidAddress">無効なアドレス。</string>
+    <string name="msg_connectionFailed">接続が失敗しました。</string>
+    <string name="msg_filesaved">petvoice_temp_log.csvファイルに保存しました。</string>
+    <string name="permission_granted">ストレージ権限が付与されます。</string>
+    <string name="permission_denied">ストレージ許可が拒否されました。</string>
+    <string-array name="petType">
+        <item>犬</item>
+        <item>猫</item>
+    </string-array>
+    <string-array name="HairLen">
+        <item>長毛</item>
+        <item>中毛</item>
+        <item>短毛</item>
+        <item>無毛</item>
+    </string-array>
+    <string-array name="HairType">
+        <item>シングルコート</item>
+        <item>ダブルコート</item>
+        <item>不明or無毛</item>
+    </string-array>
+</resources>
