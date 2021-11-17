@@ -266,7 +266,13 @@ public class MainActivity extends AppCompatActivity {
         }
         float temp = Util.Half(bytes, 19);
         Util.printLog("Temperature :" + String.format("%.2f",temp));
-        tempValue.setText(String.format("%.2f",temp) + getString(R.string.symbolCelsius));
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tempValue.setText(String.format("%.2f",temp) + getString(R.string.symbolCelsius));
+            }
+        });
+
     }
 
 
