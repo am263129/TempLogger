@@ -60,7 +60,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
                         Intent data = result.getData();
-                        addLog("bluetooth turn callback");
+//                        addLog("bluetooth turn callback");
                         if (data != null) {
                             checkBluetooth();
                         }
@@ -95,7 +95,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         btnScan = findViewById(R.id.btnscan);
         bgScan = findViewById(R.id.bg_scan);
-        Util.initLogWriter();
+//        Util.initLogWriter();
     }
 
     @Override
@@ -112,11 +112,11 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Util.logWriterClose();
+//        Util.logWriterClose();
     }
 
     public void initScanner() {
-        addLog("init scanner");
+//        addLog("init scanner");
         bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         mHandler = new Handler();
@@ -148,12 +148,12 @@ public class SplashActivity extends AppCompatActivity {
     public void ToggleScan(View view)
     {
         if (scanning) {
-            addLog("stop scan");
+//            addLog("stop scan");
             mBluetoothLeScanner.stopScan(mLeScanCallback);
             scanning = false;
             progressBar.setVisibility(View.GONE);
         } else {
-            addLog("start scan");
+//            addLog("start scan");
             progressBar.setVisibility(View.VISIBLE);
             mBluetoothLeScanner.startScan(null, scanSettings, mLeScanCallback);
             scanning = true;
@@ -171,12 +171,12 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void checkpermission() {
-        addLog("check permission");
+//        addLog("check permission");
         permissionRequest.check();
     }
 
     public void checkBluetooth(){
-        addLog("Check Bluetooth");
+//        addLog("Check Bluetooth");
         bluetoothManager =(BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         if(mBluetoothAdapter == null){
@@ -195,7 +195,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void OpenDevice(BluetoothDevice WearDev) {
-        addLog("Start main with device information");
+//        addLog("Start main with device information");
         if (scanning) {
             mBluetoothLeScanner.stopScan(mLeScanCallback);
             scanning = false;
@@ -207,20 +207,20 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void manageScanResult(ScanResult result) {
-        addLog("Found device in onScanResult");
+//        addLog("Found device in onScanResult");
         BluetoothDevice device = result.getDevice();
         String address = device.getAddress();
         String devicename = result.getDevice().getName();
-        addLog("name from result " + devicename);
+//        addLog("name from result " + devicename);
         if (devicename == null) {
             devicename = result.getScanRecord().getDeviceName();
-            addLog("name from record " + devicename);
+//            addLog("name from record " + devicename);
         }
-        addLog("Bluetooth Device Found. Name:" + devicename + " Address:" + address);
+//        addLog("Bluetooth Device Found. Name:" + devicename + " Address:" + address);
         boolean isnew = true;
 
         if (devicename != null && devicename.equals("WearDev")) {
-            addLog("WearDev Sensor Device Found." + " Address:" + address);
+//            addLog("WearDev Sensor Device Found." + " Address:" + address);
             Toast.makeText(this, "Sensor Found, auto connecting...", Toast.LENGTH_SHORT).show();
             OpenDevice(device);
         }
@@ -235,7 +235,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         public void onBatchScanResults(@NonNull List<ScanResult> results) {
-            addLog("Batch mode" + results.size());
+//            addLog("Batch mode" + results.size());
             for (ScanResult result : results) {
                 manageScanResult(result);
             }
@@ -244,12 +244,12 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         public void onScanFailed(int errorCode) {
-            addLog("Scan Failed. error code:" + errorCode);
+//            addLog("Scan Failed. error code:" + errorCode);
             super.onScanFailed(errorCode);
         }
     };
 
-    public void addLog(String log){
-        Util.printLog(log);
-    }
+//    public void addLog(String log){
+//        Util.printLog(log);
+//    }
 }

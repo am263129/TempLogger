@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private final String csvFileName = "petvoice_temp_log.csv";
     private String csvFilePath = null;
     private final String TAG = "MainActivity";
-    private int deviceWidth;
+//    private int deviceWidth;
     private BluetoothDevice wearDev;
     private String sensorAddress;
     private BluetoothAdapter mBluetoothAdapter;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sensorAddress = getIntent().getStringExtra("address") == null ? "" : getIntent().getStringExtra("address");
-        Util.printLog("Address :" + sensorAddress);
+//        Util.printLog("Address :" + sensorAddress);
         initView();
         updateUI();
         initBluetooth();
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         circularProgressBar.setBackgroundProgressBarWidth(20f);
         circularProgressBar.setIndeterminateMode(true);
         circularProgressBar.setRoundBorder(true);
-        Util.printLog("UI initiated");
+//        Util.printLog("UI initiated");
     }
 
     public void initBluetooth() {
@@ -108,35 +108,35 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
         try {
             wearDev = mBluetoothAdapter.getRemoteDevice(sensorAddress);
-            Util.printLog("Device address : " + sensorAddress);
+//            Util.printLog("Device address : " + sensorAddress);
             if (wearDev == null) {
-                Util.printLog("No Ble device (WearDev)");
+//                Util.printLog("No Ble device (WearDev)");
                 Toast.makeText(this, getString(R.string.msg_no_sensor_device), Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Util.printLog("Check connection status :"+connectionStatus);
+//                Util.printLog("Check connection status :"+connectionStatus);
                 if (connectionStatus != BluetoothProfile.STATE_CONNECTED)
                 {
-                    Util.printLog("Connect device");
+//                    Util.printLog("Connect device");
                     connect();
                 }
             }
         } catch (Exception e) {
             showToast(R.string.msg_invalidAddress);
             connectingProgress.setVisibility(View.GONE);
-            Util.printLog("Invalid device address");
+//            Util.printLog("Invalid device address");
             e.printStackTrace();
         }
-        Util.printLog("Bluetooth initiated");
+//        Util.printLog("Bluetooth initiated");
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        Util.initLogWriter();
+//        Util.initLogWriter();
         initCSV();
-        Util.printLog("Start App");
+//        Util.printLog("Start App");
         if (wearDev != null && connectionStatus == BluetoothProfile.STATE_DISCONNECTED)
         {
             connect();
@@ -145,9 +145,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        Util.printLog("Stop App");
+//        Util.printLog("Stop App");
         super.onStop();
-        Util.logWriterClose();
+//        Util.logWriterClose();
         stopReadTempData();
         try {
             csvWriter.close();
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     public void clear(View view) {
-        Util.printLog("Clear data");
+//        Util.printLog("Clear data");
         ticket.setText("");
         type.setSelection(0);
         variety.setText("");
@@ -191,13 +191,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void connect() {
         if (connectionStatus == BluetoothProfile.STATE_CONNECTED) {
-            Util.printLog("device disconnecting");
+//            Util.printLog("device disconnecting");
             stopReadTempData();
             mBluetoothGatt.disconnect();
             tempData = null;
             connectionStatus = BluetoothProfile.STATE_DISCONNECTING;
         } else if (connectionStatus == BluetoothProfile.STATE_DISCONNECTED) {
-            Util.printLog("device connecting");
+//            Util.printLog("device connecting");
             connectionStatus = BluetoothProfile.STATE_CONNECTING;
             // test
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     //If still connecting after 5 sec, update ui, and show as unable to connect;
                     if (connectionStatus == BluetoothProfile.STATE_CONNECTING) {
-                        Util.printLog("device doesn't response");
+//                        Util.printLog("device doesn't response");
                         connectionStatus = BluetoothProfile.STATE_DISCONNECTED;
                         updateUI();
                         showToast(R.string.msg_connectionFailed);
@@ -218,54 +218,55 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 8000);
         } else {
-            Util.printLog("device is busy");
+//            Util.printLog("device is busy");
             showToast(R.string.msg_device_busy);
         }
         updateUI();
     }
 
     public void startReadTempData(BluetoothGattCharacteristic tempData) {
-        Util.printLog("set temp data notify enable");
+//        Util.printLog("set temp data notify enable");
         boolean result = mBluetoothGatt.setCharacteristicNotification(tempData, true);
-        Util.printLog("set setCharacteristicNotification result: " + result);
+//        Util.printLog("set setCharacteristicNotification result: " + result);
         UUID uuid = UUID.fromString(SensorUUID.CLIENT_CHARACTERISTIC_CONFIG);
         BluetoothGattDescriptor descriptor = tempData.getDescriptor(uuid);
         if (descriptor != null) {
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             boolean descriptor_result = mBluetoothGatt.writeDescriptor(descriptor);
-            Util.printLog("Set writeDescriptor result(enable): " + descriptor_result);
+//            Util.printLog("Set writeDescriptor result(enable): " + descriptor_result);
         } else {
-            Util.printLog("Undefined descriptor");
+//            Util.printLog("Undefined descriptor");
         }
     }
 
     public void stopReadTempData() {
         if (tempData == null) {
-            Util.printLog("undefined tempData");
+//            Util.printLog("undefined tempData");
             return;
         }
         boolean result = mBluetoothGatt.setCharacteristicNotification(tempData, false);
-        Util.printLog("set setCharacteristicNotification result: " + result);
+//        Util.printLog("set setCharacteristicNotification result: " + result);
         UUID uuid = UUID.fromString(SensorUUID.CLIENT_CHARACTERISTIC_CONFIG);
         BluetoothGattDescriptor descriptor = tempData.getDescriptor(uuid);
         if (descriptor != null) {
             descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
             boolean descriptor_result = mBluetoothGatt.writeDescriptor(descriptor);
-            Util.printLog("Set writeDescriptor result(disable): " + descriptor_result);
+//            Util.printLog("Set writeDescriptor result(disable): " + descriptor_result);
         } else {
-            Util.printLog("Descriptor of MEMS_DATA null");
+//            Util.printLog("Descriptor of MEMS_DATA null");
         }
     }
 
 
     public void dspReadCharacteristic(byte[] bytes) {
-        Util.printLog("Read result : "+Util.bytesToHex(bytes));
-        if(bytes.length<20){
-            Util.printLog("No enough data length :" + bytes.length);
+//        Util.printLog("Read result : "+Util.bytesToHex(bytes));
+        if(bytes.length<21){
+//            Util.printLog("No enough data length :" + bytes.length);
             return;
         }
-        float temp = Util.Half(bytes, 19);
-        Util.printLog("Temperature :" + String.format("%.2f",temp));
+        float temp = Util.getTemperature(bytes);
+        //float temp = Util.Half(bytes, 19);
+//        Util.printLog("Temperature :" + String.format("%.2f",temp));
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -291,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
             boolean writeHeader = false;
             if(!new File(csvFilePath).exists()){
                 writeHeader = true;
+                new File(csvFilePath).createNewFile();
             }
             csvWriter = new BufferedWriter(new FileWriter(csvFilePath,true));
             if (writeHeader) {
@@ -309,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
         }
         try {
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             String time = simpleDateFormat.format(calendar.getTime());
             csvWriter.append(time); // Date time
             csvWriter.append(",");
@@ -362,27 +364,27 @@ public class MainActivity extends AppCompatActivity {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Util.printLog("device connected");
+//                Util.printLog("device connected");
                 boolean retVal = mBluetoothGatt.discoverServices();
                 // Attempts to discover services after successful connection.
-                Util.printLog("getting service list" + retVal);
+//                Util.printLog("getting service list" + retVal);
                 connectionStatus = BluetoothProfile.STATE_CONNECTED;
             } else if (newState == BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION) {
-                Util.printLog("Device is unable to communicate due to unpaired");
-                if (gatt.getDevice().getBondState() == BluetoothDevice.BOND_NONE) {
+//                Util.printLog("Device is unable to communicate due to unpaired");
+//                if (gatt.getDevice().getBondState() == BluetoothDevice.BOND_NONE) {
                     // The broadcast receiver should be called.
-                    Util.printLog("Request Bond");
-                } else {
-                    Util.printLog("already bond");
-                }
+//                    Util.printLog("Request Bond");
+//                } else {
+//                    Util.printLog("already bond");
+//                }
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                if (connectionStatus == BluetoothProfile.STATE_CONNECTING || connectionStatus == BluetoothProfile.STATE_DISCONNECTED) {
-                    Util.printLog("connecting failed");
-                } else
-                    Util.printLog("device disconnected");
+//                if (connectionStatus == BluetoothProfile.STATE_CONNECTING || connectionStatus == BluetoothProfile.STATE_DISCONNECTED) {
+//                    Util.printLog("connecting failed");
+//                } else
+//                    Util.printLog("device disconnected");
                 connectionStatus = BluetoothProfile.STATE_DISCONNECTED;
             } else if (newState == BluetoothProfile.STATE_CONNECTING) {
-                Util.printLog("device connecting");
+//                Util.printLog("device connecting");
             }
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
@@ -394,27 +396,27 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            Util.printLog("Service Discovered" + status);
+//            Util.printLog("Service Discovered" + status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 List<BluetoothGattService> bluetoothGattServices = gatt.getServices();
-                Util.printLog(bluetoothGattServices.size() + " " + "Services found");
+//                Util.printLog(bluetoothGattServices.size() + " " + "Services found");
                 for (BluetoothGattService service : bluetoothGattServices) {
                     String newService = SensorUUID.lookup(service.getUuid().toString(), service.getUuid().toString());
-                    Util.printLog("Service" +
-                            " UUID " + newService);
+//                    Util.printLog("Service" +
+//                            " UUID " + newService);
                     for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
                         String name = SensorUUID.lookup(characteristic.getUuid().toString(), characteristic.getUuid().toString());
-                        Util.printLog("Characteristic UUID : "+name);
+//                        Util.printLog("Characteristic UUID : "+name);
                         if (name.equals("MEMS_DATA")) {
                             tempData = characteristic;
-                            Util.printLog("Sensor device is ready");
+//                            Util.printLog("Sensor device is ready");
                             startReadTempData(characteristic);
                         }
                     }
-                    Util.printLog("End check service.");
+//                    Util.printLog("End check service.");
                 }
             } else {
-                Util.printLog("getting service failed");
+//                Util.printLog("getting service failed");
             }
         }
 
@@ -422,22 +424,22 @@ public class MainActivity extends AppCompatActivity {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Util.printLog("Read data:" + Util.bytesToHex(characteristic.getValue()));
-                if (SensorUUID.lookup(characteristic.getUuid().toString(), characteristic.getUuid().toString()).equals("MEMS_CONF")) {
-                    Util.printLog("Read setting" + Util.bytesToHex(characteristic.getValue()));
-                }
-            } else {
-                Util.printLog("Reading data failed");
-            }
+//            if (status == BluetoothGatt.GATT_SUCCESS) {
+//                Util.printLog("Read data:" + Util.bytesToHex(characteristic.getValue()));
+//                if (SensorUUID.lookup(characteristic.getUuid().toString(), characteristic.getUuid().toString()).equals("MEMS_CONF")) {
+//                    Util.printLog("Read setting" + Util.bytesToHex(characteristic.getValue()));
+//                }
+//            } else {
+//                Util.printLog("Reading data failed");
+//            }
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
-            Util.printLog("data received from change listener:" + Util.bytesToHex(characteristic.getValue()));
+//            Util.printLog("data received from change listener:" + Util.bytesToHex(characteristic.getValue()));
             if (SensorUUID.lookup(characteristic.getUuid().toString(), characteristic.getUuid().toString()).equals("MEMS_DATA")) {
-                Util.printLog("MEMS_DATA : " + Util.bytesToHex(characteristic.getValue()));
+//                Util.printLog("MEMS_DATA : " + Util.bytesToHex(characteristic.getValue()));
                 dspReadCharacteristic(characteristic.getValue());
             }
         }
@@ -445,10 +447,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
-            if (status == BluetoothGatt.GATT_SUCCESS) {
+//            if (status == BluetoothGatt.GATT_SUCCESS) {
                 // stop/start record comes here. and disconnect will also comes here.
-            }
-            Util.printLog("");
+//            }
+//            Util.printLog("");
         }
     };
 }
