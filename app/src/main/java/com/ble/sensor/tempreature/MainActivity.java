@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
             boolean writeHeader = false;
             if(!new File(csvFilePath).exists()){
                 writeHeader = true;
-                new File(csvFilePath).createNewFile();
+                mediaStorageDir.mkdirs();
             }
             csvWriter = new BufferedWriter(new FileWriter(csvFilePath,true));
             if (writeHeader) {
@@ -302,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             csvWriter = null;
             e.printStackTrace();
+            showToast(R.string.permission_denied);
         }
     }
 
